@@ -4,8 +4,8 @@ import App from './App';
 describe('App', () => {
     it("Should have hello world", () => {
         render(<App/>);
-        const message = screen.queryByText(/hello world/i);
+        const message = screen.queryByText(/Hello World/i);
 
-        expect(message).toBeDefined();
+        expect(message).toBeVisible();
     })
 });
