@@ -22,7 +22,6 @@
 
 .remaninin-time-container {
   flex: 1;
-  /* Take up all available space in the flex container */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -93,5 +92,4 @@
 
 
 .color3 {
-  /* border-left: 1px solid gray; */
 }
