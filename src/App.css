@@ -75,6 +75,11 @@
   height: 20rem;
 }
 
+.start-button {
+ background-color: gray;
+ 
+}
+
 .color-selection-container {
   display: flex;
   justify-content: space-evenly;

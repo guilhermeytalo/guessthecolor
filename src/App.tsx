@@ -1,6 +1,26 @@
+import { useEffect, useState } from 'react';
 import './App.css';
+import { countDowTimer } from './utils/countdownTime';
 
 function App() {
+  const [startGame, setStartGame] = useState<Boolean>(true);
+  const [remaininTime, setRemainingTime] = useState<number>(30)
+ 
+    
+  
+  
+  const hasGameStarted = () => {
+      if (startGame) {
+        setStartGame(false);
+        setRemainingTime(countDowTimer(30));
+      } 
+  }
+
+  useEffect(() => {
+
+    // console.log(tirthySecTimer)
+  })
+
   return (
     <div className="App">
       <h1>Guess the Color!</h1>
@@ -12,7 +32,7 @@ function App() {
             <br />
             Time(s)
           </h3>
-          <p>30</p>
+          <p>{remaininTime}</p>
         </div>
 
         <div className="restart-container">
@@ -37,7 +57,11 @@ function App() {
       </div>
 
       <div className="color-container">
-        <div className="color-name"></div>
+        <div className="color-name">
+          {startGame && (
+            <button className='start-button' onClick={hasGameStarted}>Start</button>
+          )}
+        </div>
       </div>
 
       <div className="color-selection-container">
