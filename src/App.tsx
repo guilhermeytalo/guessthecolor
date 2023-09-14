@@ -141,7 +141,10 @@ function App() {
         )}
       </div>
 
-      <div className="color-selection-container">
+      <div
+        className="color-selection-container"
+        style={{ display: startGame ? 'none' : '' }}
+      >
         {colorOptions.map((color, index) => (
           <div className={`color${index + 1}`} key={index}>
             <p>{color}</p>
