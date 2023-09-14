@@ -1,4 +1,4 @@
-import { countDownTimer } from '../../utils/countdownTime';
+import { countDownTimer } from '../../utils/countDownTime';
 
 // Mock the setInterval and clearInterval functions
 jest.useFakeTimers();
@@ -9,7 +9,7 @@ describe('countDownTimer', () => {
     countDownTimer(10, callback);
 
     setTimeout(() => {
-        expect(callback).toHaveBeenCalledWith(10);
+      expect(callback).toHaveBeenCalledWith(10);
     }, 1000);
   });
 
