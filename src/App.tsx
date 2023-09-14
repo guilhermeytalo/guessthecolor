@@ -107,7 +107,9 @@ function App() {
         </div>
 
         <div className="restart-container">
-          <button onClick={handleRestartGame}>Restart</button>
+          <button disabled={startGame} onClick={handleRestartGame}>
+            Restart
+          </button>
         </div>
 
         <div className="scores-container">
