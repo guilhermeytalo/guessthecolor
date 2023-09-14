@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import { countDownTimer } from './utils/countdownTime';
-import { getRandomColor } from './utils/colorGenerator';
+import { getRandomColor, shuffleArray } from './utils/colorGenerator';
 import {
   ColorContainer,
   ColorSelectionContainer,
@@ -43,18 +43,6 @@ function App() {
     timerInterval = countDownTimer(timer, (s) => setRemainingTime(s));
   };
 
-  const shuffleArray = (array: string[]) => {
-    const shuffledArray = [...array];
-    for (let i = shuffledArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffledArray[i], shuffledArray[j]] = [
-        shuffledArray[j],
-        shuffledArray[i],
-      ];
-    }
-    return shuffledArray;
-  };
-
   const handleTimerEnd = () => {
     setStartGame(true);
     setRemainingTime(timer);
@@ -91,14 +79,6 @@ function App() {
     setColorOptions(shuffledOptions);
   };
 
-  const handleOptionClick = (selectedColor: string) => {
-    if (!startGame) {
-      if (selectedColor === targetColor) {
-      } else {
-      }
-    }
-  };
-
   useEffect(() => {
     if (remainingTime === 0) {
       handleTimerEnd();
@@ -121,7 +101,6 @@ function App() {
       <ColorSelectionContainer
         colorOptions={colorOptions}
         startGame={startGame}
-        onOptionClick={handleOptionClick}
       />
     </div>
   );

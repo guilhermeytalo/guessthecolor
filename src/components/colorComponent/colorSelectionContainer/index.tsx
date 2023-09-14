@@ -5,7 +5,7 @@ import ColorOption from '../colorOption';
 interface ColorSelectionContainerProps {
   colorOptions: string[];
   startGame: boolean;
-  onOptionClick: (color: string) => void;
+  onOptionClick?: (color: string) => void;
 }
 
 const ColorSelectionContainer: React.FC<ColorSelectionContainerProps> = ({
