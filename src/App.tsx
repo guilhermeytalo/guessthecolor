@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import { countDownTimer } from './utils/countdownTime';
 import { getRandomColor } from './utils/colorGenerator';
+import {
+  ColorContainer,
+  ColorSelectionContainer,
+  ScoreBoard,
+} from './components';
 
 const timer = 5;
 let timerInterval: NodeJS.Timeout | null = null;
@@ -86,6 +91,14 @@ function App() {
     setColorOptions(shuffledOptions);
   };
 
+  const handleOptionClick = (selectedColor: string) => {
+    if (!startGame) {
+      if (selectedColor === targetColor) {
+      } else {
+      }
+    }
+  };
+
   useEffect(() => {
     if (remainingTime === 0) {
       handleTimerEnd();
@@ -95,62 +108,21 @@ function App() {
   return (
     <div className="App">
       <h1>Guess the Color!</h1>
-
-      <div className="score-board">
-        <div className="remaninin-time-container">
-          <h3>
-            Remaining
-            <br />
-            Time(s)
-          </h3>
-          <p>{remainingTime}</p>
-        </div>
-
-        <div className="restart-container">
-          <button disabled={startGame} onClick={handleRestartGame}>
-            Restart
-          </button>
-        </div>
-
-        <div className="scores-container">
-          <div className="score">
-            <h3>
-              HIGH
-              <br />
-              SCORE
-            </h3>
-            <p>0</p>
-          </div>
-
-          <div className="high-score">
-            <h3>SCORE</h3>
-            <p>0</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="color-container">
-        {targetColor && !startGame ? (
-          <div className="color-name" style={{ backgroundColor: targetColor }}>
-            <p>{targetColor}</p>
-          </div>
-        ) : (
-          <button className="start-button" onClick={startNewGame}>
-            Start
-          </button>
-        )}
-      </div>
-
-      <div
-        className="color-selection-container"
-        style={{ display: startGame ? 'none' : '' }}
-      >
-        {colorOptions.map((color, index) => (
-          <div className={`color${index + 1}`} key={index}>
-            <p>{color}</p>
-          </div>
-        ))}
-      </div>
+      <ScoreBoard
+        startGame={startGame}
+        remainingTime={remainingTime}
+        onRestart={handleRestartGame}
+      />
+      <ColorContainer
+        targetColor={targetColor}
+        startGame={startGame}
+        onStartNewGame={startNewGame}
+      />
+      <ColorSelectionContainer
+        colorOptions={colorOptions}
+        startGame={startGame}
+        onOptionClick={handleOptionClick}
+      />
     </div>
   );
 }
