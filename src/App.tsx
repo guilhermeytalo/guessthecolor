@@ -1,25 +1,53 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { countDowTimer } from './utils/countdownTime';
+import { countDownTimer } from './utils/countdownTime';
+import { getRandomColor } from './utils/colorGenerator';
 
+const timer = 5;
+let timerInterval: NodeJS.Timeout | null = null;
 function App() {
-  const [startGame, setStartGame] = useState<Boolean>(true);
-  const [remaininTime, setRemainingTime] = useState<number>(30)
- 
-    
-  
-  
-  const hasGameStarted = () => {
-      if (startGame) {
-        setStartGame(false);
-        setRemainingTime(countDowTimer(30));
-      } 
-  }
+  const [startGame, setStartGame] = useState<boolean>(true);
+  const [remainingTime, setRemainingTime] = useState<number>(timer);
+  const [targetColor, setTargetColor] = useState<string | null>(null);
+
+  const startNewGame = () => {
+    setStartGame(false);
+    setRemainingTime(timer);
+    setTargetColor(getRandomColor());
+
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+    timerInterval = countDownTimer(timer, (s) => setRemainingTime(s));
+  };
+
+  const handleTimerEnd = () => {
+    setStartGame(true);
+    setRemainingTime(timer);
+  };
+
+  const handleRestartGame = () => {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+
+    setStartGame(false);
+    setRemainingTime(timer);
+    setTargetColor(getRandomColor());
+
+    timerInterval = countDownTimer(timer, (s) => {
+      setRemainingTime(s);
+      if (s === 0) {
+        handleTimerEnd();
+      }
+    });
+  };
 
   useEffect(() => {
-
-    // console.log(tirthySecTimer)
-  })
+    if (remainingTime === 0) {
+      handleTimerEnd();
+    }
+  }, [startGame, remainingTime]);
 
   return (
     <div className="App">
@@ -32,11 +60,11 @@ function App() {
             <br />
             Time(s)
           </h3>
-          <p>{remaininTime}</p>
+          <p>{remainingTime}</p>
         </div>
 
         <div className="restart-container">
-          <button>Restart</button>
+          <button onClick={handleRestartGame}>Restart</button>
         </div>
 
         <div className="scores-container">
@@ -57,11 +85,15 @@ function App() {
       </div>
 
       <div className="color-container">
-        <div className="color-name">
-          {startGame && (
-            <button className='start-button' onClick={hasGameStarted}>Start</button>
-          )}
-        </div>
+        {targetColor && !startGame ? (
+          <div className="color-name" style={{ backgroundColor: targetColor }}>
+            <p>{targetColor}</p>
+          </div>
+        ) : (
+          <button className="start-button" onClick={startNewGame}>
+            Start
+          </button>
+        )}
       </div>
 
       <div className="color-selection-container">
