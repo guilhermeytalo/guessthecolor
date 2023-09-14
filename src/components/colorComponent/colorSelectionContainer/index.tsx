@@ -13,6 +13,9 @@ const ColorSelectionContainer: React.FC<ColorSelectionContainerProps> = ({
   startGame,
   onOptionClick,
 }) => {
+  const handleOptionClick = (color: string) => {
+    onOptionClick && onOptionClick(color);
+  }
   return (
     <div
       className="color-selection-container"
@@ -22,7 +25,7 @@ const ColorSelectionContainer: React.FC<ColorSelectionContainerProps> = ({
         <ColorOption
           key={index}
           color={color}
-          onClick={() => onOptionClick(color)}
+          onClick={handleOptionClick}
         />
       ))}
     </div>

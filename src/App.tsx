@@ -6,14 +6,15 @@ import {
   ColorSelectionContainer,
   ScoreBoard,
 } from './components';
-import { countDownTimer } from './utils/countdownTime';
+import { countDownTimer } from './utils/countDownTime';
+
 
 const timer = 5;
 let timerInterval: NodeJS.Timeout | null = null;
 function App() {
   const [startGame, setStartGame] = useState<boolean>(true);
   const [remainingTime, setRemainingTime] = useState<number>(timer);
-  const [targetColor, setTargetColor] = useState<string | null>(null);
+  const [targetColor, setTargetColor] = useState<string>('');
   const [colorOptions, setColorOptions] = useState<string[]>([]);
 
   const startNewGame = () => {
@@ -79,6 +80,19 @@ function App() {
     }
   }, [startGame, remainingTime]);
 
+  const handleOptionClick = (color: string) => {
+    console.log('ColorOption clicked3:', color);
+    if (startGame) return;
+
+    if (color === targetColor) {
+      console.log('Correct color:', color);
+    
+    } else {
+      console.log('Incorrect color:', color);
+      
+    }
+  }
+
   return (
     <div className="App">
       <h1>Guess the Color!</h1>
@@ -95,6 +109,7 @@ function App() {
       <ColorSelectionContainer
         colorOptions={colorOptions}
         startGame={startGame}
+        onOptionClick={handleOptionClick}
       />
     </div>
   );
