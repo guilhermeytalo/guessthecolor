@@ -22,12 +22,12 @@ const config = {
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [
-    '<rootDir>/src/**/*.{js,jsx,ts,tsx}',
-    '!<rootDir>/src/**/*.d.ts',
-    '!<rootDir>/src/**/*.stories.tsx',
-    '!<rootDir>/styles/**/*.{js,jsx,ts,tsx}',
-    '!<rootDir>/src/types/**/*.d.ts',
-    '!<rootDir>/src/**/mock.ts(x)?',
+    'src/**/*.{js,jsx,ts,tsx}',
+    '!src/**/*.d.ts',
+    '!src/**/*.stories.tsx',
+    '!src/styles/**/*.{js,jsx,ts,tsx}',
+    '!src/types/**/*.d.ts',
+    '!src/**/mock.ts(x)?',
   ],
 
   // The directory where Jest should output its coverage files
@@ -140,7 +140,7 @@ const config = {
   // setupFiles: [],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ["<rootDir>/.jest/setup.ts"],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
