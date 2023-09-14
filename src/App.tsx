@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { countDownTimer } from './utils/countdownTime';
 import { getRandomColor, shuffleArray } from './utils/colorGenerator';
 import {
   ColorContainer,
   ColorSelectionContainer,
   ScoreBoard,
 } from './components';
+import { countDownTimer } from './utils/countdownTime';
 
 const timer = 5;
 let timerInterval: NodeJS.Timeout | null = null;
@@ -31,9 +31,6 @@ function App() {
     ];
 
     const shuffledOptions: string[] = shuffleArray(options);
-
-    const correctColorIndex: number = shuffledOptions.indexOf(newTargetColor);
-    console.log('Correct Color Index:', correctColorIndex);
 
     setColorOptions(shuffledOptions);
 
@@ -65,9 +62,6 @@ function App() {
     ];
 
     const shuffledOptions: string[] = shuffleArray(options);
-
-    const correctColorIndex = shuffledOptions.indexOf(newTargetColor);
-    console.log('Correct Color Index:', correctColorIndex);
 
     timerInterval = countDownTimer(timer, (s) => {
       setRemainingTime(s);
