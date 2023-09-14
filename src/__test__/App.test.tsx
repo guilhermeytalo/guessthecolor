@@ -1,8 +1,19 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import React from 'react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import App from '../App';
+import * as countdownTimeModule from '../utils/countdownTime';
+import * as colorGeneratorModule from '../utils/colorGenerator';
 
-jest.mock('../utils/colorGenerator'); // Mock the colorGenerator module
-jest.mock('../utils/countdownTime'); // Mock the countdownTime module
+// Mock the utils/countdownTime module
+jest.mock('../utils/countdownTime', () => ({
+  countDownTimer: jest.fn(),
+}));
+
+// Mock the utils/colorGenerator module
+jest.mock('../utils/colorGenerator', () => ({
+  getRandomColor: jest.fn(),
+  shuffleArray: jest.fn(),
+}));
 
 describe('App', () => {
   beforeEach(() => {
@@ -14,103 +25,41 @@ describe('App', () => {
   });
 
   // Starts new game and sets target color and options
-  it('should start new game and set target color and options', () => {
-    // Mock getRandomColor function
-    const mockGetRandomColor = jest.fn().mockReturnValue('#FFFFFF');
-    jest.mock('../utils/colorGenerator', () => ({
-      getRandomColor: mockGetRandomColor,
-    }));
-
-    // Mock shuffleArray function
-    const mockShuffleArray = jest
-      .fn()
-      .mockReturnValue(['#FFFFFF', '#000000', '#FF0000']);
-    jest.mock('../utils/colorGenerator', () => ({
-      shuffleArray: mockShuffleArray,
-    }));
+  it('starts a new game when "Start" button is clicked', async () => {
+    // Mock getRandomColor and shuffleArray functions
+    const mockGetRandomColor = jest.spyOn(colorGeneratorModule, 'getRandomColor');
+    const mockShuffleArray = jest.spyOn(colorGeneratorModule, 'shuffleArray');
+    mockGetRandomColor.mockReturnValueOnce('MockedColor');
+    mockShuffleArray.mockReturnValueOnce(['MockedColor', 'Option2', 'Option3']);
 
     // Mock countDownTimer function
-    const mockCountDownTimer = jest.fn();
-    jest.mock('../utils/countdownTime', () => ({
-      countDownTimer: mockCountDownTimer,
-    }));
+    const mockCountDownTimer = jest.spyOn(countdownTimeModule, 'countDownTimer');
 
     // Render the component
     render(<App />);
+    const startNewGameButton = screen.getByText('Start');
 
-    // Simulate starting a new game
-    fireEvent.click(screen.getByText('Start'));
+    fireEvent.click(startNewGameButton);
 
-    // Assertions
-    expect(mockGetRandomColor).toHaveBeenCalledTimes(1);
-    expect(mockShuffleArray).toHaveBeenCalledTimes(1);
-    expect(mockCountDownTimer).toHaveBeenCalledTimes(1);
-    expect(mockCountDownTimer).toHaveBeenCalledWith(5, expect.any(Function));
+    // Assertions to check the game state
+    expect(mockGetRandomColor).toHaveBeenCalledTimes(3);
+    expect(mockShuffleArray).toHaveBeenCalledWith(['MockedColor', 'Option2', 'Option3']);
+
+    // Check if the target color is displayed
+    const targetColorElement = screen.getByText('Target Color: MockedColor');
+    expect(targetColorElement).toBeInTheDocument();
+
+    // Check if options are displayed
+    const option1Element = screen.getByText('MockedColor');
+    const option2Element = screen.getByText('Option2');
+    const option3Element = screen.getByText('Option3');
+    expect(option1Element).toBeInTheDocument();
+    expect(option2Element).toBeInTheDocument();
+    expect(option3Element).toBeInTheDocument();
+
+    // Restore the original functions to avoid side effects on other tests
+    mockGetRandomColor.mockRestore();
+    mockShuffleArray.mockRestore();
+    mockCountDownTimer.mockRestore();
   });
-
-  // // Shuffles color options
-  // it('should shuffle color options', () => {
-  //   // Mock getRandomColor function
-  //   const mockGetRandomColor = jest.fn().mockReturnValue('#FFFFFF');
-  //   jest.mock('../utils/colorGenerator', () => ({
-  //     getRandomColor: mockGetRandomColor,
-  //   }));
-
-  //   // Mock shuffleArray function
-  //   const mockShuffleArray = jest
-  //     .fn()
-  //     .mockReturnValue(['#FFFFFF', '#000000', '#FF0000']);
-  //   jest.mock('../utils/colorGenerator', () => ({
-  //     shuffleArray: mockShuffleArray,
-  //   }));
-
-  //   // Render the component
-  //   render(<App />);
-
-  //   // Simulate starting a new game
-  //   fireEvent.click(screen.getByText('Start'));
-
-  //   // Assertions
-  //   expect(mockShuffleArray).toHaveBeenCalledTimes(1);
-  // });
-
-  // // Timer interval is cleared when starting new game or restarting game
-  // it('should clear timer interval when starting new game or restarting game', () => {
-  //   // Mock clearInterval function
-  //   const mockClearInterval = jest.fn();
-  //   global.clearInterval = mockClearInterval;
-
-  //   // Render the component
-  //   render(<App />);
-
-  //   // Simulate starting a new game
-  //   fireEvent.click(screen.getByText('Start'));
-
-  //   // Assertions
-  //   expect(mockClearInterval).toHaveBeenCalledTimes(1);
-
-  //   // Simulate restarting the game
-  //   fireEvent.click(screen.getByText('Restart'));
-
-  //   // Assertions
-  //   expect(mockClearInterval).toHaveBeenCalledTimes(2);
-  // });
-
-  // // Remaining time is set to timer when starting new game or restarting game
-  // it('should set remaining time to timer when starting new game or restarting game', () => {
-  //   // Render the component
-  //   render(<App />);
-
-  //   // Simulate starting a new game
-  //   fireEvent.click(screen.getByText('Start'));
-
-  //   // Assertions
-  //   expect(screen.getByText('5')).toBeInTheDocument();
-
-  //   // Simulate restarting the game
-  //   fireEvent.click(screen.getByText('Restart'));
-
-  //   // Assertions
-  //   expect(screen.getByText('5')).toBeInTheDocument();
-  // });
 });
