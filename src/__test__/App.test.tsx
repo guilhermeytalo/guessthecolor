@@ -32,7 +32,7 @@ describe('App', () => {
       'getRandomColor'
     );
     mockGetRandomColor.mockReturnValueOnce('MockedColor');
-  
+
     // Custom implementation for shuffleArray
     const mockShuffleArray = jest.fn((array) => {
       // Manually shuffle the array (you can use a shuffle algorithm of your choice)
@@ -40,31 +40,36 @@ describe('App', () => {
       console.log('Shuffled Array inside function:', shuffledArray);
       return shuffledArray;
     });
-    
-    mockShuffleArray([  'MockedColor', 'Option2', 'Option3']);
-    
-    jest.spyOn(colorGeneratorModule, 'shuffleArray').mockImplementation(mockShuffleArray);
-  
+
+    // Set up the mock before rendering the component
+    jest
+      .spyOn(colorGeneratorModule, 'shuffleArray')
+      .mockImplementation(mockShuffleArray);
+
     // Mock countDownTimer function
     const mockCountDownTimer = jest.spyOn(
       countdownTimeModule,
       'countDownTimer'
     );
-  
+
     // Render the component
     render(<App />);
     const startNewGameButton = screen.getByText('Start');
-  
+
     fireEvent.click(startNewGameButton);
-  
+
     // Assertions to check the game state
     expect(mockGetRandomColor).toHaveBeenCalledTimes(3);
-    expect(mockShuffleArray).toHaveBeenCalledWith(['MockedColor', 'Option2', 'Option3']);
-  
+    expect(mockShuffleArray).toHaveBeenCalledWith([
+      'MockedColor',
+      'Option2',
+      'Option3',
+    ]);
+
     // Check if the color options are displayed correctly
     const colorOptionsElement = screen.getByText('Option2');
     expect(colorOptionsElement).toBeInTheDocument();
-  
+
     // Restore the original functions to avoid side effects on other tests
     mockGetRandomColor.mockRestore();
     mockShuffleArray.mockRestore();
