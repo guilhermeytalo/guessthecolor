@@ -9,16 +9,45 @@ function App() {
   const [startGame, setStartGame] = useState<boolean>(true);
   const [remainingTime, setRemainingTime] = useState<number>(timer);
   const [targetColor, setTargetColor] = useState<string | null>(null);
+  const [colorOptions, setColorOptions] = useState<string[]>([]);
 
   const startNewGame = () => {
     setStartGame(false);
     setRemainingTime(timer);
-    setTargetColor(getRandomColor());
+
+    const newTargetColor: string = getRandomColor();
+
+    setTargetColor(newTargetColor);
+
+    const options: string[] = [
+      newTargetColor,
+      getRandomColor(),
+      getRandomColor(),
+    ];
+
+    const shuffledOptions: string[] = shuffleArray(options);
+
+    const correctColorIndex: number = shuffledOptions.indexOf(newTargetColor);
+    console.log('Correct Color Index:', correctColorIndex);
+
+    setColorOptions(shuffledOptions);
 
     if (timerInterval) {
       clearInterval(timerInterval);
     }
     timerInterval = countDownTimer(timer, (s) => setRemainingTime(s));
+  };
+
+  const shuffleArray = (array: string[]) => {
+    const shuffledArray = [...array];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [
+        shuffledArray[j],
+        shuffledArray[i],
+      ];
+    }
+    return shuffledArray;
   };
 
   const handleTimerEnd = () => {
@@ -33,7 +62,19 @@ function App() {
 
     setStartGame(false);
     setRemainingTime(timer);
-    setTargetColor(getRandomColor());
+    const newTargetColor: string = getRandomColor();
+    setTargetColor(newTargetColor);
+
+    const options: string[] = [
+      newTargetColor,
+      getRandomColor(),
+      getRandomColor(),
+    ];
+
+    const shuffledOptions: string[] = shuffleArray(options);
+
+    const correctColorIndex = shuffledOptions.indexOf(newTargetColor);
+    console.log('Correct Color Index:', correctColorIndex);
 
     timerInterval = countDownTimer(timer, (s) => {
       setRemainingTime(s);
@@ -41,6 +82,8 @@ function App() {
         handleTimerEnd();
       }
     });
+
+    setColorOptions(shuffledOptions);
   };
 
   useEffect(() => {
@@ -97,16 +140,11 @@ function App() {
       </div>
 
       <div className="color-selection-container">
-        <div className="color1">
-          <p>#FF0000</p>
-        </div>
-        <div className="color2">
-          <p>#c98ca7</p>
-        </div>
-
-        <div className="color3">
-          <p>#e76d83</p>
-        </div>
+        {colorOptions.map((color, index) => (
+          <div className={`color${index + 1}`} key={index}>
+            <p>{color}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
