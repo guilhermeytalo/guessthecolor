@@ -10,7 +10,7 @@ export const loadHighScore = (): number => {
 
 export const saveHighScore = (highScore: number) => {
   const data = localStorage.getItem(localStorageKey);
-  let savedData: { highScore?: number } = {}; // Especifica o tipo do objeto
+  let savedData: { highScore?: number } = {};
   if (data) {
     savedData = JSON.parse(data);
   }

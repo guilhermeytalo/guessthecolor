@@ -6,12 +6,11 @@ import {
   ScoreBoard,
 } from './components';
 import { getRandomColor, shuffleArray } from './utils/colorGenerator';
-
 import { loadHighScore, saveHighScore } from './utils/scoreStorage';
-import { countDownTimer } from './utils/countDownTime';
+import { countDownTimer } from './utils/countDownTimer';
 
 const timer = 30;
-const timeToSelectColor = 5;
+const timeToSelectColor = 10;
 let timerInterval: NodeJS.Timeout | null = null;
 let timerToSelectColorInterval: NodeJS.Timeout | null = null;
 
