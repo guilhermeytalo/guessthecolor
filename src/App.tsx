@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { getRandomColor, shuffleArray } from './utils/colorGenerator';
 import {
   ColorContainer,
   ColorSelectionContainer,
   ScoreBoard,
 } from './components';
+import { getRandomColor, shuffleArray } from './utils/colorGenerator';
 import { countDownTimer } from './utils/countDownTime';
-
+import { loadHighScore, saveHighScore } from './utils/scoreStorage';
 
 const timer = 30;
 const timeToSelectColor = 5;
@@ -17,10 +17,14 @@ let timerToSelectColorInterval: NodeJS.Timeout | null = null;
 function App() {
   const [startGame, setStartGame] = useState<boolean>(true);
   const [remainingTime, setRemainingTime] = useState<number>(timer);
-  const [reaminingTimeToSelectColor, setRemainingTimeToSelectColor] = useState<number>(timeToSelectColor);
+  const [reaminingTimeToSelectColor, setRemainingTimeToSelectColor] =
+    useState<number>(timeToSelectColor);
   const [targetColor, setTargetColor] = useState<string>('');
   const [colorOptions, setColorOptions] = useState<string[]>([]);
-  const [continueAfterCorrect, setContinueAfterCorrect] = useState<boolean>(false);
+  const [continueAfterCorrect, setContinueAfterCorrect] =
+    useState<boolean>(false);
+  const [highScore, setHighScore] = useState<number>(loadHighScore());
+  const [score, setScore] = useState<number>(0);
 
   const startNewGame = () => {
     setStartGame(false);
@@ -37,19 +41,18 @@ function App() {
     ];
 
     const shuffledOptions: string[] = shuffleArray(options);
-
     setColorOptions(shuffledOptions);
 
     if (timerInterval) {
       clearInterval(timerInterval);
     }
 
-    startGameTimer()
+    startGameTimer();
     startColorSelectionTimer();
   };
 
   const startGameTimer = () => {
-    if(timerInterval) {
+    if (timerInterval) {
       clearInterval(timerInterval);
     }
     timerInterval = countDownTimer(timer, (s) => {
@@ -58,10 +61,10 @@ function App() {
         handleTimerEnd();
       }
     });
-  }
+  };
 
   const startColorSelectionTimer = () => {
-    if(timerToSelectColorInterval) {
+    if (timerToSelectColorInterval) {
       clearInterval(timerToSelectColorInterval);
     }
     timerToSelectColorInterval = countDownTimer(timeToSelectColor, (s) => {
@@ -70,36 +73,38 @@ function App() {
         handleTimerEnd();
       }
     });
-  }
+  };
 
   const handleTimerEnd = () => {
     setStartGame(true);
     setRemainingTime(timer);
 
-    if (!startGame) { // Check if it's the color selection phase
+    if (!startGame) {
       const newTargetColor: string = getRandomColor();
       setTargetColor(newTargetColor);
-    
+
       const options: string[] = [
         newTargetColor,
         getRandomColor(),
         getRandomColor(),
       ];
-    
+
       const shuffledOptions: string[] = shuffleArray(options);
-    
+
       setColorOptions(shuffledOptions);
-    
-      // Reset remainingTimeToSelectColor to 5
+
       setRemainingTimeToSelectColor(timeToSelectColor);
       startColorSelectionTimer();
     }
+
+    setHighScore(score);
+    saveHighScore(score);
   };
 
   const handleRestartGame = () => {
-    console.log('cai aqui porque escolhi uma cor', continueAfterCorrect)
-    if(continueAfterCorrect === true) {
-      console.log('Continue after correct', continueAfterCorrect);
+    if (continueAfterCorrect === true) {
+      setContinueAfterCorrect(false);
+      return;
     }
 
     setStartGame(false);
@@ -130,23 +135,25 @@ function App() {
     if (reaminingTimeToSelectColor === 0) {
       handleTimerEnd();
     }
-  }, [startGame, remainingTime, handleTimerEnd, reaminingTimeToSelectColor]);
+  }, [startGame, remainingTime, reaminingTimeToSelectColor, handleTimerEnd]);
 
   const handleOptionClick = (color: string) => {
     if (startGame) return;
 
     if (color === targetColor) {
-      console.log('Escolhi uma cor certa', color);
+      setScore(score + 1);
       setContinueAfterCorrect(true);
-      console.log('Continue after correct', continueAfterCorrect)
+    } else if (color !== targetColor) {
+      setScore(score - 1);
+      setContinueAfterCorrect(true);
     } else {
-      console.log('Escolhi uma cor errada:', color);
+      setScore(score - 2);
       setContinueAfterCorrect(true);
     }
 
     setRemainingTimeToSelectColor(timeToSelectColor);
-    handleRestartGame();  
-  }
+    handleRestartGame();
+  };
 
   return (
     <div className="App">
@@ -154,6 +161,8 @@ function App() {
       <ScoreBoard
         startGame={startGame}
         remainingTime={remainingTime}
+        score={score}
+        highScore={highScore}
         onRestart={handleRestartGame}
       />
       <div>

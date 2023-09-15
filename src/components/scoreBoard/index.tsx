@@ -3,12 +3,16 @@ import React from 'react';
 interface ScoreBoardProps {
   startGame: boolean;
   remainingTime: number;
+  score: number;
+  highScore: number;
   onRestart: () => void;
 }
 
 const ScoreBoard: React.FC<ScoreBoardProps> = ({
   startGame,
   remainingTime,
+  score,
+  highScore, 
   onRestart,
 }) => {
   return (
@@ -33,12 +37,12 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({
             <br />
             SCORE
           </h3>
-          <p>0</p>
+          <p>{highScore}</p>
         </div>
 
         <div className="high-score">
           <h3>SCORE</h3>
-          <p>0</p>
+          <p>{score}</p>
         </div>
       </div>
     </div>
