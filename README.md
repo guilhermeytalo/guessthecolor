@@ -7,8 +7,14 @@
     - [x] criar cor aleatoria 
     - [x] criar selecionador das cores 
     - [x] refatorar em componentes
-- Fazer
-    - [ ] criar  barra de timer de 10 sec
-    - [ ] criar barra lateral para armazenar as cores corretas/incorretas, e o score(checar que o score é pegadinha verifica a lógica antes)
-    - [ ] criar um botão de Reset all Data
-    - [ ] persistencia dos dados local Storage e Redux
+    - [x] persistencia dos dados local Storage
+- Fazer/Bugs e Dificuldades 
+    - [ ] Fazer
+        - [ ] criar  barra de timer de 10 sec
+        - [ ] criar barra lateral para armazenar as cores corretas/incorretas, e o score
+        - [ ] criar um botão de Reset all Data
+    - [ ] Bugs
+        - [ ] HighScore não está funcionando como esperado(decrementando o score)
+        - [ ] o timer tem um bug no estado ao selecionar uma cor
+    - [ ] Dificuldades
+        - [ ] Gerenciar diversos estados, acredito que poderia ser feito de uma maneira melhor

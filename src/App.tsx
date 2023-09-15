@@ -6,8 +6,9 @@ import {
   ScoreBoard,
 } from './components';
 import { getRandomColor, shuffleArray } from './utils/colorGenerator';
-import { countDownTimer } from './utils/countDownTime';
+
 import { loadHighScore, saveHighScore } from './utils/scoreStorage';
+import { countDownTimer } from './utils/countDownTime';
 
 const timer = 30;
 const timeToSelectColor = 5;

@@ -7,7 +7,6 @@ interface ColorNameProps {
 const ColorName: React.FC<ColorNameProps> = ({ color }) => {
   return (
     <div className="color-name" style={{ backgroundColor: color }}>
-      <p>{color}</p>
     </div>
   );
 };
