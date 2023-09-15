@@ -9,20 +9,25 @@ import {
 import { countDownTimer } from './utils/countDownTime';
 
 
-const timer = 5;
+const timer = 30;
+const timeToSelectColor = 5;
 let timerInterval: NodeJS.Timeout | null = null;
+let timerToSelectColorInterval: NodeJS.Timeout | null = null;
+
 function App() {
   const [startGame, setStartGame] = useState<boolean>(true);
   const [remainingTime, setRemainingTime] = useState<number>(timer);
+  const [reaminingTimeToSelectColor, setRemainingTimeToSelectColor] = useState<number>(timeToSelectColor);
   const [targetColor, setTargetColor] = useState<string>('');
   const [colorOptions, setColorOptions] = useState<string[]>([]);
+  const [continueAfterCorrect, setContinueAfterCorrect] = useState<boolean>(false);
 
   const startNewGame = () => {
     setStartGame(false);
     setRemainingTime(timer);
+    setRemainingTimeToSelectColor(timeToSelectColor);
 
     const newTargetColor: string = getRandomColor();
-
     setTargetColor(newTargetColor);
 
     const options: string[] = [
@@ -38,59 +43,109 @@ function App() {
     if (timerInterval) {
       clearInterval(timerInterval);
     }
-    timerInterval = countDownTimer(timer, (s) => setRemainingTime(s));
+
+    startGameTimer()
+    startColorSelectionTimer();
   };
 
-  const handleTimerEnd = () => {
-    setStartGame(true);
-    setRemainingTime(timer);
-  };
-
-  const handleRestartGame = () => {
-    if (timerInterval) {
+  const startGameTimer = () => {
+    if(timerInterval) {
       clearInterval(timerInterval);
     }
-
-    setStartGame(false);
-    setRemainingTime(timer);
-    const newTargetColor: string = getRandomColor();
-    setTargetColor(newTargetColor);
-
-    const options: string[] = [
-      newTargetColor,
-      getRandomColor(),
-      getRandomColor(),
-    ];
-
-    const shuffledOptions: string[] = shuffleArray(options);
-
     timerInterval = countDownTimer(timer, (s) => {
       setRemainingTime(s);
       if (s === 0) {
         handleTimerEnd();
       }
     });
+  }
 
+  const startColorSelectionTimer = () => {
+    if(timerToSelectColorInterval) {
+      clearInterval(timerToSelectColorInterval);
+    }
+    timerToSelectColorInterval = countDownTimer(timeToSelectColor, (s) => {
+      setRemainingTimeToSelectColor(s);
+      if (s === 0) {
+        handleTimerEnd();
+      }
+    });
+  }
+
+  const handleTimerEnd = () => {
+    setStartGame(true);
+    setRemainingTime(timer);
+
+    if (!startGame) { // Check if it's the color selection phase
+      const newTargetColor: string = getRandomColor();
+      setTargetColor(newTargetColor);
+    
+      const options: string[] = [
+        newTargetColor,
+        getRandomColor(),
+        getRandomColor(),
+      ];
+    
+      const shuffledOptions: string[] = shuffleArray(options);
+    
+      setColorOptions(shuffledOptions);
+    
+      // Reset remainingTimeToSelectColor to 5
+      setRemainingTimeToSelectColor(timeToSelectColor);
+      startColorSelectionTimer();
+    }
+  };
+
+  const handleRestartGame = () => {
+    console.log('cai aqui porque escolhi uma cor', continueAfterCorrect)
+    if(continueAfterCorrect === true) {
+      console.log('Continue after correct', continueAfterCorrect);
+    }
+
+    setStartGame(false);
+    setRemainingTime(timer);
+    setRemainingTimeToSelectColor(timeToSelectColor);
+
+    const newTargetColor: string = getRandomColor();
+    setTargetColor(newTargetColor);
+
+    const options: string[] = [
+      newTargetColor,
+      getRandomColor(),
+      getRandomColor(),
+    ];
+
+    const shuffledOptions: string[] = shuffleArray(options);
     setColorOptions(shuffledOptions);
+
+    setRemainingTimeToSelectColor(timeToSelectColor);
+
+    startColorSelectionTimer();
   };
 
   useEffect(() => {
     if (remainingTime === 0) {
       handleTimerEnd();
     }
-  }, [startGame, remainingTime]);
+    if (reaminingTimeToSelectColor === 0) {
+      handleTimerEnd();
+    }
+  }, [startGame, remainingTime, handleTimerEnd, reaminingTimeToSelectColor]);
 
   const handleOptionClick = (color: string) => {
-    console.log('ColorOption clicked3:', color);
     if (startGame) return;
 
     if (color === targetColor) {
-      console.log('Correct color:', color);
-    
+      console.log('Escolhi uma cor certa', color);
+      setContinueAfterCorrect(true);
+      console.log('Continue after correct', continueAfterCorrect)
     } else {
-      console.log('Incorrect color:', color);
-      
+      console.log('Escolhi uma cor errada:', color);
+      setContinueAfterCorrect(true);
     }
+
+    setRemainingTimeToSelectColor(timeToSelectColor);
+    handleRestartGame();  
   }
 
   return (
@@ -101,6 +156,9 @@ function App() {
         remainingTime={remainingTime}
         onRestart={handleRestartGame}
       />
+      <div>
+        <p>{reaminingTimeToSelectColor}</p>
+      </div>
       <ColorContainer
         targetColor={targetColor}
         startGame={startGame}
